@@ -1,0 +1,62 @@
+stages:
+  data_ingestion:
+    cmd: python src/LCover/pipeline/stage_01_data_ingestion.py
+    deps:
+      - src/LCover/pipeline/stage_01_data_ingestion.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion
+
+
+  prepare_base_model:
+    cmd: python src/LCover/pipeline/stage_02_prepare_base_model.py
+    deps:
+      - src/LCover/pipeline/stage_02_prepare_base_model.py
+      - config/config.yaml
+    params:
+      - IMAGE_SIZE
+      - CLASSES
+      - RATIO
+    outs:
+      - artifacts/prepare_base_model
+
+
+  training:
+    cmd: python src/LCover/pipeline/stage_03_model_training.py
+    deps:
+      - src/LCover/pipeline/stage_03_model_training.py
+      - config/config.yaml
+      - artifacts/data_ingestion
+      - artifacts/prepare_base_model
+    params:
+      - MODEL_NAME
+      - VERSION
+      - IMAGE_SIZE
+      - AUGMENTATION
+      - BATCH_SIZE
+      - EPOCHS
+      - CLASSES
+      - RATIO
+      - EARLY_STOPPING
+      - LEARNING_RATE
+    outs:
+      - artifacts/training/trained_Unet.pth
+
+
+  evaluation:
+    cmd: python src/LCover/pipeline/stage_04_model_evaluation.py
+    deps:
+      - src/LCover/pipeline/stage_04_model_evaluation.py
+      - config/config.yaml
+      - artifacts/data_ingestion
+      - artifacts/training/trained_Unet.pth
+    params:
+      - MODEL_NAME
+      - VERSION
+      - IMAGE_SIZE
+      - BATCH_SIZE
+      - CLASSES
+      - RATIO
+    metrics:
+    - scores_Unet_1.json:
+        cache: false

@@ -1,0 +1,23 @@
+pandas
+numpy
+matplotlib
+mlflow==2.2.2
+notebook
+numpy
+matplotlib
+seaborn
+python-box==6.0.2
+pyYAML
+tqdm
+dvc
+streamlit
+ensure==1.0.2
+joblib
+types-PyYAML
+torch==2.0.0
+scipy
+albumentations
+opencv-python
+torchmetrics
+segmentation-models-pytorch
+-e .
